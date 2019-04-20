@@ -11,7 +11,7 @@ Handle TimeAuto = null;
 Handle g_hGoldTagCookie;
 
 #define DNS "AWP.LALEAGANE.RO"  // YOUR SERVER'S DNS 
-#define PL_VERSION "1.0"        // Don't edit this
+#define PL_VERSION "1.1"        // Don't edit this
 
 public Plugin myinfo = 
 {
