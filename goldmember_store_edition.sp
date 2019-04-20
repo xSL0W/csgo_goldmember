@@ -1,5 +1,5 @@
-#pragma semicolon 1
-#pragma newdecls required
+// #pragma semicolon 1
+// #pragma newdecls required
 
 #include <sourcemod>
 #include <sdktools>
@@ -14,7 +14,7 @@ ConVar NoSpecCredits = null;
 Handle TimeAuto = null;
 Handle g_hGoldTagCookie;
 
-#define PL_VERSION "1.0"        // Don't edit this
+#define PL_VERSION "1.2"        // Don't edit this
 
 public Plugin myinfo = 
 {
