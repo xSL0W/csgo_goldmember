@@ -1,5 +1,5 @@
-// #pragma semicolon 1
-// #pragma newdecls required
+#pragma semicolon 1
+#pragma newdecls required
 
 #include <sourcemod>
 #include <sdktools>
@@ -9,11 +9,11 @@
 
 ConVar CreditsAdder;
 ConVar CreditsTime;
-ConVar sm_nospec = null;
+ConVar ServerDNS;
+ConVar NoSpecCredits = null;
 Handle TimeAuto = null;
 Handle g_hGoldTagCookie;
 
-#define DNS "AWP.LALEAGANE.RO"  // YOUR SERVER'S DNS 
 #define PL_VERSION "1.0"        // Don't edit this
 
 public Plugin myinfo = 
@@ -27,44 +27,49 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	g_hGoldTagCookie = RegClientCookie("GoldTagCookie", "GoldTagCookie", CookieAccess_Protected);
-	RegConsoleCmd("sm_goldtag", menutag);
+    g_hGoldTagCookie = RegClientCookie("GoldTagCookie", "GoldTagCookie", CookieAccess_Protected);
+    RegConsoleCmd("sm_goldtag", menutag);
 
-	CreditsAdder = CreateConVar("sm_goldmember_credits", "10", "Credits to give per X time, if player has DNS in name.", FCVAR_NOTIFY);
-	CreditsTime = CreateConVar("sm_goldmember_credits_time", "180", "Time in seconds to give the credits.", FCVAR_NOTIFY);
-	sm_nospec = CreateConVar("sm_nospec", "1", "0 = ALL PLAYERS and 1 = ONLY CT/T",	_, true, 0.0, true, 1.0);
-	HookConVarChange(CreditsTime, Change_CreditsTime);
+    CreditsAdder = CreateConVar("sm_goldmember_credits", "10", "Credits to give per X time, if player has DNS in name.", FCVAR_NOTIFY);
+    CreditsTime = CreateConVar("sm_goldmember_credits_time", "180", "Time in seconds to give the credits.", FCVAR_NOTIFY);
+    ServerDNS = CreateConVar("sm_goldmember_serverdns", "AWP.LALEAGANE.RO", "Server's DNS", FCVAR_NOTIFY);
+    NoSpecCredits = CreateConVar("sm_goldmember_nospec", "1", "Who gets free credits? 0 = ALL PLAYERS and 1 = ONLY CT/T, without spectators", FCVAR_NOTIFY);
 
-	HookEvent("player_spawn", Event_OnPlayerSpawn);
+
+    HookConVarChange(CreditsTime, Change_CreditsTime);
+
+    HookEvent("player_spawn", Event_OnPlayerSpawn);
+
+    AutoExecConfig(true, "goldmember");
 }
 
 
 public void OnMapStart()
 {
 	TimeAuto = CreateTimer(GetConVarFloat(CreditsTime), CheckPlayers, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-        PrintToChatAll(" \x03This server is running xSLOW'S DNS Benefits [%s]. Add \x04%s\x03 to your name to get free benefits.", PL_VERSION ,DNS);
+        //PrintToChatAll(" \x03This server is running xSLOW'S DNS Benefits [%s]. Add \x04%s\x03 to your name to get free benefits.", PL_VERSION ,ServerDNS);
 }
 
 
 public void Event_OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	char sBuffer[12];
+    int client = GetClientOfUserId(GetEventInt(event, "userid"));
+    char sBuffer[12], DNSbuffer[32];
+    ServerDNS.GetString(DNSbuffer, sizeof(DNSbuffer));
 	
-	if (client == 0 || IsFakeClient(client))
+    if (client == 0 || IsFakeClient(client))
 	{
 		return;
 	}
-	
         if(HasDNS(client) == true)
         {
             PrintToChat(client, " ✪︎ \x01You're getting FREE \x03ARMOR & CREDITS & !GOLDTAG\x01 for being a \x10GoldMember♛");
             GiveArmor(client);
         }
             else
-            {
-	            PrintToChat(client, " ✪︎ \x01Add \x07'%s' \x01to your NAME to get \x10GoldMember♛ \x03(FREE ARMOR & CREDITS & !GOLDTAG)", DNS);
-            }
+	        PrintToChat(client, " ✪︎ \x01Add \x07'%s' \x01to your NAME to get \x10GoldMember♛ \x03(FREE ARMOR & CREDITS & !GOLDTAG)", DNSbuffer);
+
+
 
         if(IsClientValid(client) && HasDNS(client) == true)
         {
@@ -347,6 +352,8 @@ public int tagmenu(Handle menu, MenuAction action, int iClient, int param2)
 // Menu Tag
 public Action menutag(int client, int args)
 {
+    char DNSbuffer[32];
+    ServerDNS.GetString(DNSbuffer, sizeof(DNSbuffer));
     if((HasDNS(client)))
     {
         GoldTag(client);
@@ -354,7 +361,7 @@ public Action menutag(int client, int args)
 
     else
     {
-        PrintToChat(client, " ✪︎ \x01Add \x07'%s' \x01to your NAME to get \x10GoldMember♛ \x03(FREE ARMOR & CREDITS & !GOLDTAG)", DNS);
+        PrintToChat(client, " ✪︎ \x01Add \x07'%s' \x01to your NAME to get \x10GoldMember♛ \x03(FREE ARMOR & CREDITS & !GOLDTAG)", DNSbuffer);
     }
 }
 
@@ -393,13 +400,12 @@ public int GoldTag(int client)
 // Verify if player has DNS in name
 bool HasDNS(int client)
 {
-    char PlayerName[32];
+    char PlayerName[32], buffer[32];
+    ServerDNS.GetString(buffer, sizeof(buffer));
     GetClientName(client, PlayerName, sizeof(PlayerName));
 
-    if(StrContains(PlayerName, DNS, false) > -1)
-    {  
-        return true;
-    }
+    if(StrContains(PlayerName, buffer, false) > -1)
+    return true;
     else
     return false;
 }
@@ -441,7 +447,7 @@ public void addcredits(int client)
 {
 	if (HasDNS(client) == true)
 	{
-		if(!(sm_nospec.IntValue == 1 && GetClientTeam(client) < 2)) 
+		if(!(NoSpecCredits.IntValue == 1 && GetClientTeam(client) < 2)) 
 		{
 			Store_SetClientCredits(client, Store_GetClientCredits(client) + GetConVarInt(CreditsAdder));
 			PrintToChat(client, "✪︎ You're getting \x07%i more credits \x01for being a \x10GoldMember♛︎", GetConVarInt(CreditsAdder));
