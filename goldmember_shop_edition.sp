@@ -174,13 +174,13 @@ public void Event_OnPlayerSpawn(Event event, const char[] name, bool dontBroadca
 
 
 // tagmenu
-public tagmenu(Handle:menu, MenuAction:action, iClient, param2)
+public tagmenu(Handle menu, MenuAction action, iClient, param2)
 {
     switch (action)
     {
         case MenuAction_Select:
         {
-            decl String:sBuffer[12];
+            char sBuffer[12];
             int i = 9;
 
             switch(param2)
@@ -359,7 +359,7 @@ public Action menutag(client, args)
 // GoldTag menu
 public GoldTag(client)
 {
-    new Handle:menu = CreateMenu(tagmenu);
+    Handle menu = CreateMenu(tagmenu);
     SetMenuTitle(menu, "Menu TAG GoldMember");
  
     AddMenuItem(menu, "none", "No TaG");
