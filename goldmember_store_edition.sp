@@ -68,9 +68,8 @@ public void Event_OnPlayerSpawn(Event event, const char[] name, bool dontBroadca
 
         if(IsClientValid(client) && HasDNS(client) == true)
         {
-            int choosed;
-            GetClientCookie(client,g_hGoldTagCookie,sBuffer,sizeof(sBuffer))
-            choosed = StringToInt(sBuffer);
+            GetClientCookie(client,g_hGoldTagCookie,sBuffer,sizeof(sBuffer));
+            int choosed = StringToInt(sBuffer);
             if (IsClientInGame(client)&&(IsClientValid(client)))
             {
                 if(choosed == 1)
@@ -177,7 +176,7 @@ public void Event_OnPlayerSpawn(Event event, const char[] name, bool dontBroadca
 
 
 // tagmenu
-public tagmenu(Handle menu, MenuAction action, int iClient, int param2)
+public int tagmenu(Handle menu, MenuAction action, int iClient, int param2)
 {
     switch (action)
     {
@@ -360,7 +359,7 @@ public Action menutag(int client, int args)
 }
 
 // GoldTag menu
-public GoldTag(int client)
+public int GoldTag(int client)
 {
     Handle menu = CreateMenu(tagmenu);
     SetMenuTitle(menu, "Menu TAG GoldMember");
@@ -371,10 +370,10 @@ public GoldTag(int client)
     AddMenuItem(menu, "goldmember3", "GoldMember♥");
     AddMenuItem(menu, "avicii", "Avicii™");
     AddMenuItem(menu, "dumnezeu","theGΦD♰︎");
-    AddMenuItem(menu, "reaper", "TheReaper☠︎︎")
-    AddMenuItem(menu, "asul","BΦ$$♚︎")
+    AddMenuItem(menu, "reaper", "TheReaper☠︎︎");
+    AddMenuItem(menu, "asul","BΦ$$♚︎");
     AddMenuItem(menu, "radioactiv","Radioactive ☢︎");
-    AddMenuItem(menu, "1tap","➀︎Ⓣ︎Ⓐ︎Ⓟ︎")
+    AddMenuItem(menu, "1tap","➀︎Ⓣ︎Ⓐ︎Ⓟ︎");
     AddMenuItem(menu, "cioara", "◉◡◉");
     AddMenuItem(menu, "moet", "❍ᴥ❍");
     AddMenuItem(menu, "sniper", "sNipeR ❖");
