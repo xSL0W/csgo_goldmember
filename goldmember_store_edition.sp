@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #include <sourcemod>
 #include <sdktools>
 #include <store>
@@ -174,13 +177,13 @@ public void Event_OnPlayerSpawn(Event event, const char[] name, bool dontBroadca
 
 
 // tagmenu
-public tagmenu(Handle:menu, MenuAction:action, iClient, param2)
+public tagmenu(Handle menu, MenuAction action, int iClient, int param2)
 {
     switch (action)
     {
         case MenuAction_Select:
         {
-            decl String:sBuffer[12];
+            char sBuffer[12];
             int i = 9;
 
             switch(param2)
@@ -343,7 +346,7 @@ public tagmenu(Handle:menu, MenuAction:action, iClient, param2)
 }
 
 // Menu Tag
-public Action menutag(client, args)
+public Action menutag(int client, int args)
 {
     if((HasDNS(client)))
     {
@@ -357,9 +360,9 @@ public Action menutag(client, args)
 }
 
 // GoldTag menu
-public GoldTag(client)
+public GoldTag(int client)
 {
-    new Handle:menu = CreateMenu(tagmenu);
+    Handle menu = CreateMenu(tagmenu);
     SetMenuTitle(menu, "Menu TAG GoldMember");
  
     AddMenuItem(menu, "none", "No TaG");
@@ -389,7 +392,7 @@ public GoldTag(client)
 
 
 // Verify if player has DNS in name
-bool:HasDNS(client)
+bool HasDNS(int client)
 {
     char PlayerName[32];
     GetClientName(client, PlayerName, sizeof(PlayerName));
@@ -403,7 +406,7 @@ bool:HasDNS(client)
 }
 
 // Give armor function
-void GiveArmor(client)
+void GiveArmor(int client)
 {
 	GivePlayerItem(client, "item_kevlar");
 	GivePlayerItem(client, "item_assaultsuit");
